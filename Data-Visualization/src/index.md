@@ -36,6 +36,12 @@ Estou fazendo isso para isolar o DataSet e tentar encontrar alguma característi
             ${ vl.render(ex03(divWidth - 115)) }
         </div>
     </div>
+     <div id="ex04" class="card">
+        <h1>Exemplo 04</h1>
+        <div style="width: 100%; margin-top: 15px;">
+            ${ vl.render(ex04(divWidth - 115)) }
+        </div>
+    </div>
 </div>
 
 
@@ -134,4 +140,45 @@ function ex03(divWidth) {
         }
     };
 }
+
+function ex04(divWidth) {
+    return {
+        spec: {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+            values: Top100}, // Use your Top100 dataset
+        "transform": [{
+            "filter": {"and": [
+                {"field": "bpm", "valid": true}, // Adjust field names
+                {"field": "energy_%", "valid": true} // Adjust field names
+            ]}
+        }],
+        "mark": "rect",
+        "width": 300,
+        "height": 200,
+        "encoding": {
+            "x": {
+                "bin": {"maxbins": 60},
+                "field": "bpm", // Adjust field name
+                "type": "quantitative"
+            },
+            "y": {
+                "bin": {"maxbins": 40},
+                "field": "energy_%", // Adjust field name
+                "type": "quantitative"
+            },
+            "color": {
+                "aggregate": "count",
+                "type": "quantitative"
+            }
+        },
+        "config": {
+            "view": {
+                "stroke": "transparent"
+            }
+        }
+    }
+  };
+}
+
 ```
