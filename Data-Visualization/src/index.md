@@ -47,9 +47,9 @@ const divWidth = Generators.width(document.querySelector("#ex01"));
 
 
 ```js
-const Top50 = arquivo.slice(0, 100);
+const Top100 = arquivo.slice(0, 100);
 
-view(Inputs.table(Top50));
+view(Inputs.table(Top100));
 
 
 import * as vega from "npm:vega";
@@ -63,7 +63,7 @@ function ex01(divWidth) {
         spec: {
             width: divWidth,
             data: {
-                values: Top50
+                values: Top100
             },
             "mark": {
                 "type": "bar"
@@ -89,23 +89,46 @@ function ex02(divWidth) {
         spec: {
             width: divWidth,
             data: {
-                values: Top50
+                values: Top100
+            }, 
+            mark: {
+                type: "circle"
             },
-            "mark": {
-                "type": "bar"
-            },
-            "encoding": {
-                "x": {
-                    "field": "bpm",
-                    "type": "nominal",
-                    "bin": {
-                      "maxbins": 10
-                    }
+            encoding: {
+                y   : {
+                    type: "quantitative",
+                    field: "bpm",
+                    title: "Music BPM"
                 },
-                "y": {
-                    "type": "quantitative",
-                    "aggregate": "count"
-                    
+                x: {
+                    type: "quantitative", // You can use "nominal" if y-axis should represent discrete values
+                    field: "streams", // Assuming there's a field with the music title
+                    title: "Music Streams"
+                }
+            }
+        }
+    };
+}
+
+function ex03(divWidth) {
+    return {
+        spec: {
+            width: divWidth,
+            data: {
+                values: Top100
+            }, 
+            mark: {
+                type: "circle"
+            },
+            encoding: {
+                y   : {
+                    type: "nominal",
+                    field: "mode",
+                },
+                x: {
+                    type: "quantitative", // You can use "nominal" if y-axis should represent discrete values
+                    field: "streams", // Assuming there's a field with the music title
+                    title: "Music Streams"
                 }
             }
         }
