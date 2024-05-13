@@ -1,4 +1,6 @@
-# DataSet Completo
+# Questão 1 - Existe alguma característica que faz uma música ter mais chance de se tornar popular?
+
+## DataSet Completo
 
 ```js
 const arquivo = await FileAttachment("./data/spotify-2023.csv").csv({typed: true});
@@ -13,37 +15,9 @@ view(Inputs.table(arquivo));
 
 
 
-# Top 50 músicas mais ouvidas
+# Top 100 músicas mais ouvidas
 Estou fazendo isso para isolar o DataSet e tentar encontrar alguma característica em comum nesse conjunto, que possa fazer com que uma música se torne popular.
-
-
-<div class="grid grid-cols-2">
-    <div id="ex01" class="card">
-        <h1>Exemplo 01</h1>
-        <div style="width: 100%; margin-top: 15px;">
-            ${ vl.render(ex01(divWidth - 45)) }
-        </div>
-    </div>
-    <div id="ex02" class="card">
-        <h1>Exemplo 02</h1>
-        <div style="width: 100%; margin-top: 15px;">
-            ${ vl.render(ex02(divWidth - 45)) }
-        </div>
-    </div>
-    <div id="ex03" class="card">
-        <h1>Exemplo 03</h1>
-        <div style="width: 100%; margin-top: 15px;">
-            ${ vl.render(ex03(divWidth - 115)) }
-        </div>
-    </div>
-     <div id="ex04" class="card">
-        <h1>Exemplo 04</h1>
-        <div style="width: 100%; margin-top: 15px;">
-            ${ vl.render(ex04(divWidth - 115)) }
-        </div>
-    </div>
-</div>
-
+Esse será o dataset que será utilizado para responder à questão 1
 
 
 ```js
@@ -95,21 +69,22 @@ function ex02(divWidth) {
         spec: {
             width: divWidth,
             data: {
-                values: Top100
-            }, 
-            mark: {
-                type: "circle"
+                values: arquivo
             },
-            encoding: {
-                y   : {
-                    type: "quantitative",
-                    field: "bpm",
-                    title: "Music BPM"
+            "mark": {
+                "type": "bar"
+            },
+            "encoding": {
+                "y": {
+                    "field": "bpm",
+                    "type": "quantitative",
+                    "bin": {"maxbins": 10}
                 },
-                x: {
-                    type: "quantitative", // You can use "nominal" if y-axis should represent discrete values
-                    field: "streams", // Assuming there's a field with the music title
-                    title: "Music Streams"
+                "x": {
+                    "type": "quantitative",
+                    "aggregate": "count",
+                    "title": "Number of Musics"
+                    
                 }
             }
         }
@@ -124,33 +99,37 @@ function ex03(divWidth) {
                 values: Top100
             }, 
             mark: {
-                type: "circle"
+                type: "point"
             },
             encoding: {
                 y   : {
-                    type: "nominal",
-                    field: "mode",
+                    type: "quantitative",
+                    field: "energy_%",
+                    title: "energy_%"
                 },
                 x: {
                     type: "quantitative", // You can use "nominal" if y-axis should represent discrete values
-                    field: "streams", // Assuming there's a field with the music title
-                    title: "Music Streams"
+                    field: "danceability_%", // Assuming there's a field with the music title
+                    title: "Music danceability"
+                },
+                size: {
+                    field: "valence_%", 
+                    type: "quantitative"
+                }
                 }
             }
-        }
     };
 }
 
 function ex04(divWidth) {
     return {
         spec: {
-        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "data": {
             values: Top100}, // Use your Top100 dataset
         "transform": [{
             "filter": {"and": [
-                {"field": "bpm", "valid": true}, // Adjust field names
-                {"field": "energy_%", "valid": true} // Adjust field names
+                {"field": "valence_%", "valid": true}, // Adjust field names
+                {"field": "danceability_%", "valid": true} // Adjust field names
             ]}
         }],
         "mark": "rect",
@@ -158,13 +137,13 @@ function ex04(divWidth) {
         "height": 200,
         "encoding": {
             "x": {
-                "bin": {"maxbins": 60},
-                "field": "bpm", // Adjust field name
+                "bin": {"maxbins": 10},
+                "field": "valence_%", // Adjust field name
                 "type": "quantitative"
             },
             "y": {
-                "bin": {"maxbins": 40},
-                "field": "energy_%", // Adjust field name
+                "bin": {"maxbins": 10},
+                "field": "danceability_%", // Adjust field name
                 "type": "quantitative"
             },
             "color": {
@@ -182,3 +161,44 @@ function ex04(divWidth) {
 }
 
 ```
+# Notas musicais(key):
+Procurei visualizar melhor a frequencia com que cada valor da tabela "key" aparecia, já que os valores dessa coluna representam a principal nota musical de cada música.
+Queria saber, entre as músicas presentes no Top 100, qual nota musical mais aparecia, ou seja, qual é o valor mais frequente da coluna "key" e se o resultado iria trazer alguma discrepância. Não houve uma distância tão grande, mas foi possível notar que o valor "C#" aparece com uma certa frequencia acima dos outros valores do gráfico.
+Para facilitar essa visualização de algum padrão foram criados gráficos de barra
+
+<div id="ex01" class="card">
+        <h1>Notas musicais mais frequentes</h1>
+        <div style="width: 100%; margin-top: 15px;">
+            ${ vl.render(ex01(divWidth - 45)) }
+        </div>
+</div>
+
+## Análise:
+Através do gráfico criado acima, podemos perceber que o valor "C#" é o mais frequente com alguma folga, cerca de 50% mais frequente que a segunda e a terceira nota musical que mais aparece nas 100 músicas mais populares do dataset. Isso indica que, se uma música tiver o Dó sustenido(C#), possui maior probabiblidade de se tornar popular
+
+
+# Visualização da presença de elementos ao vivo
+
+<div id="ex02" class="card">
+        <h1>Quantidade de músicas x % de elementos ao vivo</h1>
+        <div style="width: 100%; margin-top: 15px;">
+            ${ vl.render(ex02(divWidth - 45)) }
+        </div>
+</div>
+
+## Análise:
+O gráfico acima deixa bem evidente que quanto menor o índice de elementos ao vivo, maior a chance da musica estar no Top100. Temos 32 músicas com índice menor que 10% e 39 músicas coom índice menor que 20%. Portanto, temos que 70% das musicas mais populares melhor dizendo, para uma música ter maior probabilidade de ser popular, o ideal é que a quantidade de elementos ao vivo presente na mesma seja um indice menor que 20% de elementos ao vivo.
+
+<div id="ex03" class="card">
+        <h1>Exemplo 03</h1>
+        <div style="width: 100%; margin-top: 15px;">
+            ${ vl.render(ex03(divWidth - 115)) }
+        </div>
+</div>
+
+<div id="ex04" class="card">
+        <h1>Exemplo 04</h1>
+        <div style="width: 100%; margin-top: 15px;">
+            ${ vl.render(ex04(divWidth - 115)) }
+        </div>
+</div>
