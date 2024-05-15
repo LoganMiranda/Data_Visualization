@@ -39,12 +39,13 @@ function ex01(divWidth) {
             "encoding": {
                 "x": {
                     "field": "key",
-                    "type": "nominal"
+                    "type": "nominal",
+                    "title": "notas musicais"
                 },
                 "y": {
                     "type": "quantitative",
                     "aggregate": "count",
-                    "title": "Number of Musics"
+                    "title": "Quantidade de músicas"
                     
                 }
             }
@@ -54,7 +55,7 @@ function ex01(divWidth) {
 ```
 <hr>
 
-# Notas musicais(key):
+# Notas musicais (key):
 Procurei visualizar melhor a frequencia com que cada valor da tabela "key" aparecia, já que os valores dessa coluna representam a principal nota musical de cada música.
 Queria saber, entre as músicas presentes na base de dados, qual nota musical mais aparecia, ou seja, qual é o valor mais frequente da coluna "key" e se o resultado iria trazer alguma discrepância. 
 Para facilitar essa visualização de algum padrão foram criados gráficos de barra
@@ -93,11 +94,13 @@ function ex02(divWidth) {
             "y": {
                 "bin": {"maxbins": 10},
                 "field": "danceability_%", 
+                "title": "dançabilidade",
                 "type": "quantitative"
             },
             "x": {
                 "bin": {"maxbins": 10},
                 "field": "energy_%", 
+                "title": "energia%",
                 "type": "quantitative"
             },
             "color": {
@@ -118,7 +121,7 @@ function ex02(divWidth) {
 <br>
 <hr>
 
-# Dançabilidade e Energia da música
+# Dançabilidade e Energia
 Procurei encontrar uma correlação de dois elementos musicais que, quando aliados em uma determinada faixa, possam concentrar uma maior quantidade de músicas. Dessa maneira, se uma música possuir a combinação desses dois elementos musicais, teria mais chance de se tornar popular.
 
 <div id="ex02" class="card">
@@ -148,13 +151,13 @@ function ex04(divWidth) {
                 "x": {
                     "field": "liveness_%",
                     "type": "quantitative",
-                    "title": "positividade%"
+                    "title": "elementos ao vivo%"
 
                 },
                 "y": {
                     "field": "speechiness_%",
                     "type": "quantitative",
-                    "title": "dançabilidade%"
+                    "title": "palavras diferentes%"
 
                 }   
             }
@@ -165,10 +168,10 @@ function ex04(divWidth) {
 <br>
 <hr>
 
-# Quantidade de palavras diferentes e elementos ao vivo
+# Palavras diferentes e elementos ao vivo
 
 <div id="ex04" class="card">
-        <h1>Exemplo 04</h1>
+        <h1>Speechiness x Liveness</h1>
         <div style="width: 100%; margin-top: 15px;">
             ${ vl.render(ex04(divWidth - 175)) }
         </div>
