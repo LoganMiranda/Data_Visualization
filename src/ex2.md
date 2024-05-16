@@ -4,8 +4,19 @@
 ```js
 const arquivo = await FileAttachment("./data/spotify-2023.csv").csv({typed: true});
 
+import * as vega from "npm:vega";
+import * as vegaLite from "npm:vega-lite";
+import * as vegaLiteApi from "npm:vega-lite-api";
+
+const divWidth = Generators.width(document.querySelector("#top10ArtistasEntreOsTop10"));
+
+const vl = vegaLiteApi.register(vega, vegaLite);
+
 
 ```
+
+
+
 
 Para responder a essa pergunta, primeiramente precisamos de uma visualizacão do top 10 músicas e 10 artistas entre todos os anos:
 
@@ -76,6 +87,9 @@ Para visualizar os top 10 artistas de todos os tempos, primeiro foram agregadas 
       acc[ano_musica] = [linha_csv]
     }else {
       acc[ano_musica].push(linha_csv)
+      acc[ano_musica].sort((a,b) => {
+        return b.streams - a.streams
+      })
     }
     return acc
   }, {})
@@ -100,12 +114,32 @@ Para visualizar os top 10 artistas de todos os tempos, primeiro foram agregadas 
 
   const topDezArtistasEmCadaAno = Object.entries(musicasEmCadaAno).reduce((acc, anoEMusicas) => {
     const ano = anoEMusicas[0]
-
     const musicas = anoEMusicas[1]
     const streamsPorArtistaNoAno = getStreamsPorArtista(musicas)
     const dezArtistasMaisPopularesNoAno = getDezArtistasMaisPopulares(streamsPorArtistaNoAno)
     acc[ano] = dezArtistasMaisPopularesNoAno
 
+    return acc
+  }, {})
+
+  // Musicas em cada ano e separadas por mes, ordenadas da mais popular para a menos popular
+  const musicasEmCadaAnoEMes = Object.entries(musicasEmCadaAno).reduce((acc, anoEMusicas) => {
+    const ano = anoEMusicas[0]
+    const musicas = anoEMusicas[1]
+
+    acc[ano] = musicas.reduce((acc, musica) => {
+      const mes_lancamento = musica.released_month
+      if(acc[mes_lancamento] === undefined){
+        acc[mes_lancamento] = [musica]
+      }else{
+        acc[mes_lancamento].push(musica)
+        acc[mes_lancamento].sort((a,b) => {
+          return b.streams - a.streams
+        })
+      }
+      return acc
+    }, {})
+    
     return acc
   }, {})
 
@@ -116,9 +150,169 @@ Para visualizar os top 10 artistas de todos os tempos, primeiro foram agregadas 
     "🚀 ~ streamsPorArtista": streamsPorArtista,
     "🚀 ~ dezArtistasMaisPopulares:": dezArtistasMaisPopulares,
     "🚀 ~ musicasEmCadaAno:": musicasEmCadaAno,
-    "🚀 ~ topDezMusicasEmCadaAno ~ topDezMusicasEmCadaAno:": topDezMusicasEmCadaAno,
-    "🚀 ~ topDezArtistasEmCadaAno": topDezArtistasEmCadaAno,
+    "🚀 ~ topDezMusicasEmCadaAno:": topDezMusicasEmCadaAno,
+    "🚀 ~ topDezArtistasEmCadaAno:": topDezArtistasEmCadaAno,
+    "🚀 ~  musicasEmCadaAnoEMes:": musicasEmCadaAnoEMes
   })
 
 
 ```
+
+## É frequente um artista aparecer muitas vezes no top 10 em diferentes anos?
+Procuramos descobrir se um artista aparece muitas vezes no top 10 ao longo dos anos ou se é algo isolado. Para isso, primeiro agregamos os top 10 artistas em cada um dos anos e, com isso, fomos capazes de observar que somente a partir de 2011 temos pelo menos 10 artistas distintos para compor o top 10. Após isso, contamos quantas vezes cada artista esteve presente no top 10 de 2011 para frente.
+
+```js
+
+  const topDezArtistasQueMaisAparecemNoTopDezDeCadaAnoAPartirDeDoisMilEOnze = Object.entries(Object.entries(topDezArtistasEmCadaAno).filter((anoEMusicas) =>  anoEMusicas[0]>=2011).reduce((acc, anoEMusicas)=>{
+    
+    const musicas = anoEMusicas[1]
+
+    musicas.forEach((musica) => {
+    const nomeArtista = musica.nome
+
+      if (acc[nomeArtista] === undefined){
+        acc[nomeArtista] = 1
+      }else{
+        acc[nomeArtista] += 1
+      }
+    })
+    return acc
+  }, {})).reduce((acc, nomeEQuantidade)=>{
+    acc.push(
+      {
+        "nome": nomeEQuantidade[0],
+        "quantidade":nomeEQuantidade[1]
+      }
+    )
+    return acc
+  },[]).sort((a,b)=>{
+    return b.quantidade - a.quantidade
+  }).slice(0,10)
+
+
+function top10ArtistasEntreOsTop10(divWidth) {
+    return {
+        spec: {
+            width: divWidth,
+            data: {
+                values: topDezArtistasQueMaisAparecemNoTopDezDeCadaAnoAPartirDeDoisMilEOnze
+            },
+               
+            "mark": {
+                "type": "bar"
+            },
+            "encoding": {
+                "x": {
+                    "field": "nome",
+                    "type": "nominal",
+                    "title": "Nome artista"
+                },
+                "y": {
+                    "type": "quantitative",
+                    "field": "quantidade",
+                    "title": "Ocorrências no top 10"
+                    
+                }
+            }
+        }
+    };
+}
+
+```
+
+
+
+<div id="top10ArtistasEntreOsTop10" class="card">
+        <h1>Artistas mais frequentes no Top 10 de cada ano a partir de 2011, inclusive</h1>
+        <div style="width: 100%; margin-top: 15px;">
+            ${ vl.render(top10ArtistasEntreOsTop10(divWidth -15)) }
+        </div>
+</div>
+
+
+
+<!-- Ideas:
+1- Qual o mínimo de streams que um artista deve possuir para ter mais chances de estar no top 10 de um determinado ano?
+2 - Quantidade total de streams por top 10 por ano?  -->
+
+
+```js
+const quantidadeDeStreamsDoTop10DeCadaAno = Object.entries(Object.entries(topDezArtistasEmCadaAno).filter((anoEMusicas) =>  anoEMusicas[0]>=2011).reduce((acc, anoEMusicas)=>{
+    
+    const musicas = anoEMusicas[1]
+    const ano = anoEMusicas[0]
+
+    musicas.forEach((musica) => {
+    const nomeArtista = musica.nome
+    const streamsArtista = musica.streams
+
+      if (acc[nomeArtista] === undefined){
+        acc[ano] = streamsArtista
+      }else{
+        acc[ano] += streamsArtista
+      }
+    })
+    return acc
+  }, {})).reduce((acc, anoEStreams)=>{
+    acc.push(
+      {
+        "ano": anoEStreams[0],
+        "streams":anoEStreams[1]
+      }
+    )
+    return acc
+  },[]).sort((a,b)=>{
+    return a.ano - b.ano
+  })
+
+
+function quantidadeDeStreamsDoTop10DeCadaAnoGraphInterativo(divWidth) {
+  return {
+    "spec": {
+      "description": "Quantidade de streams do top 10 de cada ano.",
+      "data": { "values": quantidadeDeStreamsDoTop10DeCadaAno },
+      "encoding": {
+        "x": { "field": "ano", "type": "temporal", "title": "Ano" },
+        "y": { "field": "streams", "type": "quantitative", "title": "Quantidade de Streams" }
+      },
+      "layer": [{
+        "mark": { "type": "line" }
+      }, {
+        "params": [{
+          "name": "hover",
+          "select": { "type": "point", "on": "pointerover", "clear": "pointerout" }
+        }],
+        "mark": { "type": "circle", "tooltip": true },
+        "encoding": {
+          "opacity": {
+            "condition": { "param": "hover", "value": 1 },
+            "value": 0
+          },
+          "size": {
+            "condition": { "param": "hover", "value": 48 },
+            "value": 100
+          },
+        
+        }
+      }],
+      "width": divWidth
+    }
+  };
+}
+```
+
+## Como é o comportamento da quantidade total de streams de todo o top 10 artistas ao longo dos anos?
+Pensamos em observar o comportamento da quatidade de streams totais de um top 10 de um ano, para descobrir se havia alguma tendência de comportamento ao longo dos anos. Para isso, separamos as top 10 músicas de cada ano a partir de 2011
+
+<div id="quantidadeDeStreamsDoTop10DeCadaAnoGraphInterativo" class="card">
+        <h1>Quantidades de streams em cada top 10 de artistas ao longo dos anos</h1>
+        <div style="width: 100%; margin-top: 15px;">
+            ${ vl.render(quantidadeDeStreamsDoTop10DeCadaAnoGraphInterativo(divWidth -15)) }
+        </div>
+</div>
+
+### Análise
+A partir da análise do gráfico gerado, é possível observar que houve uma queda expressiva na popularidade das músicas entre o top 10 de 2017 e o top 10 de 2018, com uma diferença de mais de 1 bilhão de streams totais. Essa queda pode se dar pela popularidade da plataforma Spotify que pode ter caído nesse ano. Além disso, pudemos observar que durante a pandemia da covid-19 houve um aumento expressivo de cerca de 1 bilhão de streams a mais em 2021 do que em 2020, número esse que foi caindo nos anos seguintes a pandemia, chegando a menos de 1 bilhão de streams ao final de julho de 2023(limite do dataset).
+
+### Justificativa da visualização
+Escolhemos um gráfico de linha para sermos capazes de observar alguma possível tendência sobre esses números.
