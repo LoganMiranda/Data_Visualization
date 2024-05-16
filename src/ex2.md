@@ -230,6 +230,9 @@ function top10ArtistasEntreOsTop10(divWidth) {
 </div>
 
 
+# Análise
+Podemos inferir que, entre os artistas mais ouvidos, esses são os mais populares. De modo que há uma tendência maior das músicas lançadas por esses artistas estarem no Top10 do ano do lançamento da música. Também é possível notar que "The Weekend" e "Bad Bunny" estão na frente dos outros artistas, e o próximo passo, portanto, é buscarmos alguma relaçao das músicas desses 2 artistas para entendermos melhor
+
 
 <!-- Ideas:
 1- Qual o mínimo de streams que um artista deve possuir para ter mais chances de estar no top 10 de um determinado ano?
@@ -300,6 +303,89 @@ function quantidadeDeStreamsDoTop10DeCadaAnoGraphInterativo(divWidth) {
   };
 }
 ```
+<br>
+<hr>
+
+# Qual é a quantidade de artistas presentes nas músicas do "The Weekdn", quem mais aparece no Top10 ao longo dos anos, e do "Bad Bunny", segundo colocado ?
+
+```js
+const Top2ArtistasMaisFrequentesTop10 = []
+
+arquivo.forEach(musica => {
+    if (musica['artist(s)_name'].includes('The Weeknd') || musica['artist(s)_name'].includes('Bad Bunny')) {
+        // Adiciona a música ao array filtrado
+        Top2ArtistasMaisFrequentesTop10.push(musica);
+    }
+});
+
+const contagemPorNumeroDeArtistas = {
+    um_artista: 0,
+    dois_artistas: 0,
+    tres_artistas: 0
+};
+
+Top2ArtistasMaisFrequentesTop10.forEach(musica => {
+    const numeroDeArtistas = musica.artist_count;
+    if (numeroDeArtistas === 1) {
+        contagemPorNumeroDeArtistas.um_artista++;
+    } else if (numeroDeArtistas === 2) {
+        contagemPorNumeroDeArtistas.dois_artistas++;
+    } else if (numeroDeArtistas === 3) {
+        contagemPorNumeroDeArtistas.tres_artistas++;
+    }
+});
+
+const Notas_Musicais_Not_Null = Top2ArtistasMaisFrequentesTop10.filter(row => row.key !== null);
+
+
+console.log(contagemPorNumeroDeArtistas)
+
+
+function ex01(divWidth) {
+    return {
+        spec: {
+            width: divWidth,
+            data: {
+                values: [
+                  {Quantidade_Artista: "1", valor:contagemPorNumeroDeArtistas.um_artista},
+                  {Quantidade_Artista: "2", valor:contagemPorNumeroDeArtistas.dois_artistas},
+                  {Quantidade_Artista: "3", valor:contagemPorNumeroDeArtistas.tres_artistas}
+                ]
+            },
+            "mark": {
+                "type": "arc",
+                "tooltip": true
+            },
+            "encoding": {
+                "theta": {
+                  "field": "valor", 
+                  "type": "quantitative",
+                  "stack":"normalize"
+                },
+                "color": {
+              "field": "Quantidade_Artista", 
+              "type": "nominal"
+              }
+            }
+        }
+    };
+}
+
+```
+<div id="ex01" class="card">
+        <h1>Artistas por música</h1>
+        <div style="width: 100%; margin-top: 15px;">
+            ${ vl.render(ex01(divWidth - 115)) }
+        </div>
+</div>
+
+<br>
+
+# Análise
+ Pode-se perceber que o gráfico é composto, quase que na sua totalidade (92%), por músicas que possuem 1 ou 2 artistas participantes. Portanto, se uma música tiver mais de 2 participantes, dificilmente estará no Top10 ao longo dos anos, possui probabiblidade menor que 10%.
+
+<hr>
+<br>
 
 ## Como é o comportamento da quantidade total de streams de todo o top 10 artistas ao longo dos anos?
 Pensamos em observar o comportamento da quatidade de streams totais de um top 10 de um ano, para descobrir se havia alguma tendência de comportamento ao longo dos anos. Para isso, separamos as top 10 músicas de cada ano a partir de 2011
@@ -312,7 +398,7 @@ Pensamos em observar o comportamento da quatidade de streams totais de um top 10
 </div>
 
 ### Análise
-A partir da análise do gráfico gerado, é possível observar que houve uma queda expressiva na popularidade das músicas entre o top 10 de 2017 e o top 10 de 2018, com uma diferença de mais de 1 bilhão de streams totais. Essa queda pode se dar pela popularidade da plataforma Spotify que pode ter caído nesse ano. Além disso, pudemos observar que durante a pandemia da covid-19 houve um aumento expressivo de cerca de 1 bilhão de streams a mais em 2021 do que em 2020, número esse que foi caindo nos anos seguintes a pandemia, chegando a menos de 1 bilhão de streams ao final de julho de 2023(limite do dataset).
+A partir da análise do gráfico gerado, é possível observar que houve uma queda expressiva na popularidade das músicas entre o top 10 de 2017 e o top 10 de 2018, com uma diferença de mais de 1 bilhão de streams totais. Essa queda pode se dar pela popularidade da plataforma Spotify, que pode ter caído nesse ano. Além disso, pudemos observar que durante a pandemia da covid-19 houve um aumento expressivo de cerca de 1 bilhão de streams a mais em 2021 do que em 2020, número esse que foi caindo nos anos seguintes a pandemia, chegando a menos de 1 bilhão de streams ao final de julho de 2023(limite do dataset).
 
 ### Justificativa da visualização
 Escolhemos um gráfico de linha para sermos capazes de observar alguma possível tendência sobre esses números.
