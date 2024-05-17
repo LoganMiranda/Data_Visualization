@@ -58,28 +58,28 @@ function ex01(divWidth) {
                   {Plataformas: "Apple", valor: Quantidade_Playlists_Por_Plataforma.apple}
                 ]
             },
-            "mark": {
-                "type": "arc",
-                "tooltip": true
-            },
-            "encoding": {
-                "theta": {
-                  "field": "valor", 
-                  "type": "quantitative",
-                  "stack":"normalize"
-                },
-                "color": {
-              "field": "Plataformas", 
-              "type": "nominal"
-              }
-            }
+             "encoding": {
+        "theta": { "field": "valor", "type": "quantitative", "stack":true},
+        "color": { "field": "Plataformas", "type": "nominal" },
+      },
+      "mark": {
+        "tooltip": true
+      },
+      "layer": [{
+        "mark": { "type": "arc", "outerRadius": 80, "tooltip": true }
+      }, {
+        "mark": { "type": "text", "radius": 90,"tooltip": true },
+        "encoding": {
+          "text": { "field": "valor", "type": "quantitative" }
+        }
+      }],
         }
     };
 }
 ```
 
 # Musicas nas playlists de cada plataforma
-O objetivo era visualizar se alguma plataforma possuia uma quantidade muito grande de músicas em sua Playlists, em comparação com as outras. 
+O objetivo era visualizar se alguma plataforma possuia uma quantidade muito grande de músicas em suas playlists, em comparação com as outras. Para isso, agregamos todas 
 
 <div id="ex01" class="card">
         <h1>Quantidade de músicas nas Playlist de cada Plataforma</h1>
@@ -126,7 +126,6 @@ Top100.forEach(musica => {
 
 console.log(Quantidade_Charts_Por_Plataforma)
 
-view(Inputs.table(Top100));
 function ex04(divWidth) {
     return {
         spec: {
@@ -146,13 +145,16 @@ function ex04(divWidth) {
                 x: {
                     field: "Plataformas", // Usar os nomes das plataformas como valores para o eixo x
                     type: "nominal",
-                    title: "Plataformas"
+                    title: "Plataformas",
+                    axis:{
+                        labelAngle: 0
+                    }
                 },
                 y: {
                     field: "valor",
                     type: "quantitative",
                     title: "Quantidade de charts"
-                }
+                },   
             }
         }
     };

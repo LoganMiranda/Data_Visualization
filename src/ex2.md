@@ -199,13 +199,16 @@ function top10ArtistasEntreOsTop10(divWidth) {
             },
                
             "mark": {
-                "type": "bar"
+                "type": "bar", tooltip: true
             },
             "encoding": {
                 "x": {
                     "field": "nome",
                     "type": "nominal",
-                    "title": "Nome artista"
+                    "title": "Nome artista",
+                    axis:{
+                      labelAngle: 0
+                    }
                 },
                 "y": {
                     "type": "quantitative",
@@ -310,6 +313,7 @@ function quantidadeDeStreamsDoTop10DeCadaAnoGraphInterativo(divWidth) {
 
 ```js
 const Top2ArtistasMaisFrequentesTop10 = []
+console.log("🚀 ~ Top2ArtistasMaisFrequentesTop10:", Top2ArtistasMaisFrequentesTop10)
 
 arquivo.forEach(musica => {
     if (musica['artist(s)_name'].includes('The Weeknd') || musica['artist(s)_name'].includes('Bad Bunny')) {
@@ -318,22 +322,25 @@ arquivo.forEach(musica => {
     }
 });
 
-const contagemPorNumeroDeArtistas = {
-    um_artista: 0,
-    dois_artistas: 0,
-    tres_artistas: 0
-};
+const contagemPorNumeroDeArtistas = Object.entries(Top2ArtistasMaisFrequentesTop10.reduce((acc, musica) =>{
+  if(acc[musica.artist_count] === undefined){
+    acc[musica.artist_count] = 0
+  }
+  acc[musica.artist_count] += 1
 
-Top2ArtistasMaisFrequentesTop10.forEach(musica => {
-    const numeroDeArtistas = musica.artist_count;
-    if (numeroDeArtistas === 1) {
-        contagemPorNumeroDeArtistas.um_artista++;
-    } else if (numeroDeArtistas === 2) {
-        contagemPorNumeroDeArtistas.dois_artistas++;
-    } else if (numeroDeArtistas === 3) {
-        contagemPorNumeroDeArtistas.tres_artistas++;
-    }
-});
+  console.log("🚀 ~ contagemPorNumeroDeArtistas ~ acc:", acc)
+  return acc
+  
+},{})).reduce((acc, qtdArtistasEQtdMusicas) => {
+  console.log("🚀 ~ contagemPorNumeroDeArtistas ~ qtdArtistasEQtdMusicas:", qtdArtistasEQtdMusicas)
+  
+  acc.push({
+    "quantidade_artistas":qtdArtistasEQtdMusicas[0],
+    "quantidade_musicas": qtdArtistasEQtdMusicas[1]
+  })
+  return acc
+}, [])
+
 
 const Notas_Musicais_Not_Null = Top2ArtistasMaisFrequentesTop10.filter(row => row.key !== null);
 
@@ -342,33 +349,29 @@ console.log(contagemPorNumeroDeArtistas)
 
 
 function ex01(divWidth) {
-    return {
-        spec: {
-            width: divWidth,
-            data: {
-                values: [
-                  {Quantidade_Artista: "1", valor:contagemPorNumeroDeArtistas.um_artista},
-                  {Quantidade_Artista: "2", valor:contagemPorNumeroDeArtistas.dois_artistas},
-                  {Quantidade_Artista: "3", valor:contagemPorNumeroDeArtistas.tres_artistas}
-                ]
-            },
-            "mark": {
-                "type": "arc",
-                "tooltip": true
-            },
-            "encoding": {
-                "theta": {
-                  "field": "valor", 
-                  "type": "quantitative",
-                  "stack":"normalize"
-                },
-                "color": {
-              "field": "Quantidade_Artista", 
-              "type": "nominal"
-              }
-            }
+  return {
+    spec: {
+      width: divWidth,
+      data: {
+        values: contagemPorNumeroDeArtistas
+      },
+      "encoding": {
+        "theta": { "field": "quantidade_musicas", "type": "quantitative", "stack":true},
+        "color": { "field": "quantidade_artistas", "type": "nominal" },
+      },
+      "mark": {
+        "tooltip": true
+      },
+      "layer": [{
+        "mark": { "type": "arc", "outerRadius": 80, "tooltip": true }
+      }, {
+        "mark": { "type": "text", "radius": 90,"tooltip": true, fontSize: 16 },
+        "encoding": {
+          "text": { "field": "quantidade_musicas", "type": "quantitative"  }
         }
-    };
+      }],
+    }
+  };
 }
 
 ```
@@ -382,7 +385,7 @@ function ex01(divWidth) {
 <br>
 
 # Análise
- Pode-se perceber que o gráfico é composto, quase que na sua totalidade (92%), por músicas que possuem 1 ou 2 artistas participantes. Portanto, se uma música tiver mais de 2 participantes, dificilmente estará no Top10 ao longo dos anos, possui probabiblidade menor que 10%.
+ Pode-se perceber que o número de músicas Portanto, se uma música tiver mais de 2 participantes, dificilmente estará no Top10 ao longo dos anos, possui probabiblidade menor que 10%.
 
 <hr>
 <br>
