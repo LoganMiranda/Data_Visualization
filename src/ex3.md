@@ -69,9 +69,7 @@ function ex01(divWidth) {
         "mark": { "type": "arc", "outerRadius": 80, "tooltip": true }
       }, {
         "mark": { "type": "text", "radius": 90,"tooltip": true },
-        "encoding": {
-          "text": { "field": "valor", "type": "quantitative" }
-        }
+        
       }],
         }
     };
@@ -92,6 +90,11 @@ O objetivo era visualizar se alguma plataforma possuia uma quantidade muito gran
 
 # Análise:
 Fica explícito que o Spotify é a plataforma que mais possui músicas populares em playlists próprias. Isso pode ser um indicativo que o Spotify tenta introduzir novas músicas aos usuários por meio de playlists, que possuem várias outras novas e diferentes músicas, mas que estão relacionadas à que o usúario gostou, tentando assim apresentar novas músicas com base em uma música mais famosa no momento.
+
+<br>
+
+# Justificativa de visualização
+ Utilizamos o gráfico de pizza, pois queríamos representar a parte de um todo. Queríamos representar a quantidade de playlists que as músicas estão inseridas, de acordo com cada plataforma. Logo, o marcador visual é o total da área do gráfico, que é a quantidade total de playlist que as músicas estão, e os canais visuais são as diferentes cores utilizadas, que representam as diferentes plataformas que possuem playlist.
 
 
 ```js
@@ -178,4 +181,8 @@ function ex04(divWidth) {
 # Análise
 Pode-se inferir que uma musica famosa aparecera muitas vezes no charts da Apple, e para as outras plataformas isso não se mantem. Alem disso, ao contrario da analise anterior, em que spotify é disparado a plataforma que mais possui musicas nas suas playlists, a Apple é, de longe, a que mais possui músicas nos charts. Portanto, a apple busca atrair usúarios, colocando enfase em músicas populares, colocando-as nos charts mais vezes, para que os usuários passem a utilizar mais a plataforma.
 
+<br>
+
+# Justificativa de visualização
+Foi utilizado gráfico de barras, para facilitar a comparação dos dados, já que os dados são de duas categorias diferentes. Os dados do eixo X, "Plataformas", são do tipo catégorico, enquanto que os do eixo Y são do tipo quantitativo. O marcador visual é a barra e o canal visual é a cor aplicada na barra que, nesse caso, é o azul.
 

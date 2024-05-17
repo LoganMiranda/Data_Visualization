@@ -207,7 +207,7 @@ function top10ArtistasEntreOsTop10(divWidth) {
                     "type": "nominal",
                     "title": "Nome artista",
                     axis:{
-                      labelAngle: 0
+                      labelAngle: -45
                     }
                 },
                 "y": {
@@ -228,7 +228,7 @@ function top10ArtistasEntreOsTop10(divWidth) {
 <div id="top10ArtistasEntreOsTop10" class="card">
         <h1>Artistas mais frequentes no Top 10 de cada ano a partir de 2011, inclusive</h1>
         <div style="width: 100%; margin-top: 15px;">
-            ${ vl.render(top10ArtistasEntreOsTop10(divWidth -15)) }
+            ${ vl.render(top10ArtistasEntreOsTop10(divWidth -45)) }
         </div>
 </div>
 
@@ -236,11 +236,10 @@ function top10ArtistasEntreOsTop10(divWidth) {
 # Análise
 Podemos inferir que, entre os artistas mais ouvidos, esses são os mais populares. De modo que há uma tendência maior das músicas lançadas por esses artistas estarem no Top10 do ano do lançamento da música. Também é possível notar que "The Weekend" e "Bad Bunny" estão na frente dos outros artistas, e o próximo passo, portanto, é buscarmos alguma relaçao das músicas desses 2 artistas para entendermos melhor
 
+<br>
 
-<!-- Ideas:
-1- Qual o mínimo de streams que um artista deve possuir para ter mais chances de estar no top 10 de um determinado ano?
-2 - Quantidade total de streams por top 10 por ano?  -->
-
+# Justificativa de visualização
+Foi utilizado gráfico de barras, para facilitar a comparação dos dados, já que os dados são de duas categorias diferentes. Os dados do eixo X, "nome do artista", são do tipo catégorico, enquanto que os do eixo Y são do tipo quantitativo e representam a contagem de vezes que oa artista do eixo x esteve no Top10 desde 2011. O marcador visual é a barra e o canal visual é a cor aplicada na barra que, nesse caso, é o azul.
 
 ```js
 const quantidadeDeStreamsDoTop10DeCadaAno = Object.entries(Object.entries(topDezArtistasEmCadaAno).filter((anoEMusicas) =>  anoEMusicas[0]>=2011).reduce((acc, anoEMusicas)=>{
@@ -387,6 +386,12 @@ function ex01(divWidth) {
 # Análise
  Pode-se perceber que o número de músicas Portanto, se uma música tiver mais de 2 participantes, dificilmente estará no Top10 ao longo dos anos, possui probabiblidade menor que 10%.
 
+<br>
+
+ # Justificativa de visualização
+ Utilizamos o gráfico de pizza, pois queríamos representar a parte de um todo. Queríamos representar para todas as músicas que os artistas "The Weeknd" e "Bad Bunny" aparecem, a quantidade de músicas que tem 1, 2 ou 3 cantores participantes. Logo, o marcador visual é o total da área do gráfico, que são todas as músicas que esses dois cantores possuem participação e, os canais visuais são as diferentes cores utilizadas, que representam uma quantidade diferente de cantores presentes nas músicas.
+
+
 <hr>
 <br>
 
@@ -404,4 +409,4 @@ Pensamos em observar o comportamento da quatidade de streams totais de um top 10
 A partir da análise do gráfico gerado, é possível observar que houve uma queda expressiva na popularidade das músicas entre o top 10 de 2017 e o top 10 de 2018, com uma diferença de mais de 1 bilhão de streams totais. Essa queda pode se dar pela popularidade da plataforma Spotify, que pode ter caído nesse ano. Além disso, pudemos observar que durante a pandemia da covid-19 houve um aumento expressivo de cerca de 1 bilhão de streams a mais em 2021 do que em 2020, número esse que foi caindo nos anos seguintes a pandemia, chegando a menos de 1 bilhão de streams ao final de julho de 2023(limite do dataset).
 
 ### Justificativa da visualização
-Escolhemos um gráfico de linha para sermos capazes de observar alguma possível tendência sobre esses números.
+Escolhemos um gráfico de linha para sermos capazes de observar alguma possível tendência sobre esses números. Queríamos ver se o spotify tinha uma tendência de ir crescendo ou diminuindo, em termos de quantidade de strams em cada Top10 por ano. Os marcadores visuais utilizados foram as linhas, interligadas por pontos. Já o canal visual utilizado foi a cor azul.
