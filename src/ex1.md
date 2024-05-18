@@ -56,8 +56,8 @@ function ex01(divWidth) {
 <hr>
 
 # Notas musicais (key):
-Procurei visualizar melhor a frequencia com que cada valor da tabela "key" aparecia, já que os valores dessa coluna representam a principal nota musical de cada música.
-Queria saber, entre as músicas presentes na base de dados, qual nota musical mais aparecia, ou seja, qual é o valor mais frequente da coluna "key" e se o resultado iria trazer alguma discrepância. 
+Procuramos visualizar melhor a frequencia com que cada valor da tabela "key" aparecia, já que os valores dessa coluna representam a principal nota musical de cada música.
+Queríamos saber, entre as músicas presentes na base de dados, qual nota musical mais aparecia, ou seja, qual é o valor mais frequente da coluna "key" e se o resultado iria trazer alguma discrepância. 
 Para facilitar essa visualização de algum padrão foram criados gráficos de barra
 
 <div id="ex01" class="card">
@@ -126,7 +126,7 @@ function ex02(divWidth) {
 <hr>
 
 # Dançabilidade e Energia
-Procurei encontrar uma correlação de dois elementos musicais que, quando aliados em uma determinada faixa, possam concentrar uma maior quantidade de músicas. Dessa maneira, se uma música possuir a combinação desses dois elementos musicais, teria mais chance de se tornar popular.
+Procuramos encontrar uma correlação de dois elementos musicais que, quando aliados em uma determinada faixa, possam concentrar uma maior quantidade de músicas. Dessa maneira, se uma música possuir a combinação desses dois elementos musicais, teria mais chance de se tornar popular.
 
 <div id="ex02" class="card">
         <h1>Danceability x Energy</h1>
